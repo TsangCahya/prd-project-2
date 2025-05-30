@@ -1,52 +1,52 @@
-# YOLOv5 Live Detection Web App
+# Weed Detection Application
 
-This is a web application that uses YOLOv5 for real-time object detection through your webcam.
+A real-time weed detection application using YOLOv5 and Flask.
 
-## Local Development
+## Features
 
-1. Install dependencies:
+- Real-time camera feed
+- YOLOv5 model for weed detection
+- Web interface with status monitoring
+- Optimized for performance
+
+## Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/TsangCahya/prd-project-2.git
+cd prd-project-2
+```
+
+2. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Place your YOLOv5 model in the `models` directory:
-```bash
-mkdir -p models
-cp /path/to/your/model.pt models/best.pt
-```
-
 3. Run the application:
 ```bash
-python3 app.py
+python app.py
 ```
 
-4. Open your browser and go to:
+4. Open your browser and navigate to:
 ```
-http://localhost:5000
-```
-
-## Deployment to Vercel
-
-1. Install Vercel CLI:
-```bash
-npm i -g vercel
+http://localhost:5002
 ```
 
-2. Deploy:
-```bash
-vercel
-```
+## Requirements
 
-## Important Notes
+- Python 3.8+
+- OpenCV
+- PyTorch
+- Flask
+- YOLOv5
 
-- The application requires access to your webcam
-- Make sure your browser allows camera access
-- The model file should be placed in the `models` directory
-- For local development, you need YOLOv5 installed in your home directory
+## Project Structure
 
-## Health Check
+- `app.py`: Main Flask application
+- `templates/`: HTML templates
+- `models/`: YOLOv5 model weights
+- `requirements.txt`: Python dependencies
 
-You can check if the application is running properly by visiting:
-```
-http://localhost:5000/health
-``` 
+## License
+
+MIT License
