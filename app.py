@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import logging
 from threading import Lock
+import numpy as np
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -71,6 +72,14 @@ def generate_frames():
     camera = get_camera()
     if camera is None:
         logger.error("No camera available")
+        # Return a blank frame with text
+        blank = np.zeros((480, 640, 3), np.uint8)
+        cv2.putText(blank, "Camera not available", (50, 240), 
+                   cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        ret, buffer = cv2.imencode('.jpg', blank)
+        frame = buffer.tobytes()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         return
 
     try:
@@ -123,8 +132,13 @@ def status():
     camera_available = get_camera() is not None
     return jsonify({
         "model_loaded": model_loaded,
-        "camera_available": camera_available
+        "camera_available": camera_available,
+        "status": "running"
     })
+
+@app.route('/test')
+def test():
+    return "Application is running!"
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 3000))
