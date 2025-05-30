@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent
 logger.info(f"Base directory: {BASE_DIR}")
 
 # Add YOLOv5 to path
-YOLO_PATH = os.path.expanduser('/Users/tsang/yolov5')
+YOLO_PATH = os.path.expanduser('~/yolov5')  # Changed for PythonAnywhere
 if os.path.exists(YOLO_PATH):
     sys.path.append(YOLO_PATH)
     logger.info(f"YOLOv5 path added: {YOLO_PATH}")
@@ -125,6 +125,9 @@ def status():
         "model_loaded": model_loaded,
         "camera_available": camera_available
     })
+
+# This is the entry point for PythonAnywhere
+application = app
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5002))
