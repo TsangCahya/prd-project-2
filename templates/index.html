@@ -1,42 +1,112 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>YOLOv5 Live Detection</title>
+    <title>Weed Detection</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
             background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
         }
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
-            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         h1 {
             color: #333;
-            margin-bottom: 20px;
+            text-align: center;
         }
         .video-container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            width: 100%;
+            margin: 20px 0;
         }
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
+        .video-feed {
+            width: 100%;
+            border-radius: 4px;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .error {
+            display: none;
+            color: #dc3545;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>YOLOv5 Live Detection</h1>
+        <h1>Weed Detection</h1>
+        
+        <div class="status">
+            <p>Model Status: <span id="model-status">Loading...</span></p>
+            <p>Camera Status: <span id="camera-status">Loading...</span></p>
+        </div>
+
+        <div class="loading" id="loading">
+            Loading model and camera... This may take a few moments.
+        </div>
+
+        <div class="error" id="error"></div>
+
         <div class="video-container">
-            <img src="{{ url_for('video_feed') }}" width="640" height="480">
+            <img src="{{ url_for('video_feed') }}" class="video-feed" id="video-feed">
         </div>
     </div>
+
+    <script>
+        function updateStatus() {
+            fetch('/status')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('model-status').textContent = 
+                        data.model_loaded ? 'Loaded' : 'Loading...';
+                    document.getElementById('camera-status').textContent = 
+                        data.camera_available ? 'Available' : 'Not available';
+                    
+                    if (data.model_loaded && data.camera_available) {
+                        document.getElementById('loading').style.display = 'none';
+                    } else {
+                        document.getElementById('loading').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('error').textContent = 
+                        'Error checking status. Please refresh the page.';
+                    document.getElementById('error').style.display = 'block';
+                });
+        }
+
+        // Check status every 2 seconds
+        setInterval(updateStatus, 2000);
+        
+        // Initial status check
+        updateStatus();
+
+        // Handle video feed errors
+        document.getElementById('video-feed').onerror = function() {
+            document.getElementById('error').textContent = 
+                'Error accessing camera. Please make sure your camera is connected and not in use by another application.';
+            document.getElementById('error').style.display = 'block';
+        };
+    </script>
 </body>
 </html> 
